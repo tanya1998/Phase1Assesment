@@ -1,47 +1,55 @@
 package dao;
 
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeMap;
+
 import exception.FolderExceptions;
-import model.Folder;
+import model.File;
 
 public class FolderDAOImpl implements FolderDAO {
 	
 	
-	private static Folder root = new Folder("Root");
-	public FolderDAOImpl()
-	{
+	private static Map<String,File>  root = new TreeMap<String,File>();
+
+	@Override
+	public void searchFile(String name) throws FolderExceptions {
 		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public Folder getfolder(String name) throws FolderExceptions {
-		
-		String[] hierarchy = name.trim().split("/");
-		if(hierarchy.length==0)
-		{
-			return root;
-		}
-		else
-		{
-			Folder current = root;
-			for(String s : hierarchy)
+		if(root.containsKey(name))
 			{
-				Folder next  = current.getFolders().getOrDefault(s,null);
-				if(next == null)
-				{
-					throw new FolderExceptions("The folder path is invalid");
-				}
-				current = next;
+				System.out.println("File found successfully");
+				System.out.println(root.get(name));
 			}
-			return current;
-		}
+		else
+			throw new FolderExceptions("The given file name doesn't exist");
+		
+		
 	}
-
-	
 
 	@Override
-	public Folder getroot() {
+	public void addFile(File file) throws FolderExceptions {
 		
-		return root;
+		if(root.containsKey(file.getName()))
+			throw new FolderExceptions("The given file name already exists");
+		root.put(file.getName(),file);
+		System.out.println("File added succesfully");
 	}
 
+	@Override
+	public void deleteFile(String name) throws FolderExceptions {
+		
+		if(!root.containsKey(name))
+			throw new FolderExceptions("The file name doesn't exist");
+		root.remove(name);
+		
+	}
+
+	@Override
+	public Set<Entry<String, File>> getAllFile() throws FolderExceptions {
+		if(root.size()==0)
+			throw new FolderExceptions("The main directory is Empty. No file to display");
+		return root.entrySet();
+	}
+	
 }

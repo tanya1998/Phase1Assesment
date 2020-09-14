@@ -1,81 +1,52 @@
 package service;
 
-import java.util.Set;
-
 import dao.FolderDAO;
 import dao.FolderDAOImpl;
 import exception.FolderExceptions;
-import model.Folder;
+import model.File;
 
 public class FolderServiceImpl implements FolderService {
 
 	private FolderDAO dao = new FolderDAOImpl();
+
 	@Override
-	public void createfile(String f, String name) throws FolderExceptions {
-		Folder folder = dao.getfolder(f);
-		if(folder!=null)
+	public void addFile(File file) throws FolderExceptions {
+		if(!isValidName(file.getName()))
 		{
-			folder.addFiles(name);
+			throw new FolderExceptions(file.getName()+" contains invalid characters");
 		}
+		if(!isValidSize(file.getSize()))
+		{
+			throw new FolderExceptions(file.getSize()+ "is too large for the memory alloted to directory");
+		}
+		dao.addFile(file);
 		
 	}
 
 	@Override
-	public void deletefile(String f, String name) throws FolderExceptions {
-		Folder folder = dao.getfolder(f);
-		if(folder!=null)
-		{
-			Set<String> files = folder.getFiles();
-			if(!files.remove(name))
-			{
-				throw new FolderExceptions("The file name doesn't exist in the specified folder");
-			}
-			else
-			{
-				System.out.println("The specified file has been deleted.");
-			}
-		}
+	public void deleteFile(String name) throws FolderExceptions {
+		dao.deleteFile(name);
 		
 	}
 
 	@Override
-	public void searchfile(String name) throws FolderExceptions {
-		int file_break = name.trim().lastIndexOf('/');
-		Folder folder = null;
-		if(file_break == -1)
-		{
-			folder = dao.getroot();
-		}
-		else
-		{
-			folder = dao.getfolder(name.substring(0, file_break));
-		}
-		if(folder!=null)
-		{
-			if(folder.getFiles().contains(name.substring(file_break+1)))
-				System.out.println("Search succesful. File exists at the given path");
-			else
-				System.out.println("Search unsuccessful. The given file can't be found");
-			
-		}
+	public void searchFile(String name) throws FolderExceptions {
+		dao.searchFile(name);
 		
 	}
+
 	@Override
-	public void addfolder(String parent, Folder folder) throws FolderExceptions {
-		Folder par = dao.getfolder(parent);
-		if(par!=null)
-		{
-			par.addFolders(folder);
-		}
-		
-	}
-	@Override
-	public void printAll() {
-		
-		Folder root =  dao.getroot();
-		System.out.println(root.toString());
+	public void getAllFile() throws FolderExceptions{
+		System.out.println(dao.getAllFile().toString());
 		
 	}
 	
-
+	public boolean isValidName(String name)
+	{
+		return false;
+	}
+	public boolean isValidSize(long size)
+	{
+		return false;
+	}
 }
