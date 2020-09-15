@@ -41,6 +41,8 @@ public class FolderDAOImpl implements FolderDAO {
 		
 		if(!root.containsKey(name))
 			throw new FolderExceptions("The file name doesn't exist");
+		else
+			System.out.println("File deleted successfuly");
 		root.remove(name);
 		
 	}

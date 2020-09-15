@@ -3,7 +3,10 @@ package main;
 import java.util.Scanner;
 
 import exception.FolderExceptions;
-import model.Folder;
+import model.File;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import service.FolderService;
 import service.FolderServiceImpl;
 
@@ -17,13 +20,6 @@ public class LockedMeMain {
 		@SuppressWarnings("resource")
 		Scanner scanner = new Scanner(System.in);
 		FolderService service = new FolderServiceImpl();
-		try {
-			service.addfolder("/", new Folder("FirstFolder"));
-			service.addfolder("FirstFolder", new Folder("SecondFolder"));
-			service.addfolder("/", new Folder("FirstFolder"));
-		} catch (FolderExceptions e2) {
-			System.out.println(e2.getMessage());
-		}
 		//SuperHeroService service = new SuperHeroServiceImpl();
 		do {
 			System.out.println("\nMain Menu");
@@ -40,12 +36,11 @@ public class LockedMeMain {
 			switch (ch) {
 			case 1 : 
 					System.out.println("Displaying the current files and folders");
-					try {
-						service.createfile("FirstFolder/SecondFolder", "Firstfile");
-					} catch (FolderExceptions e1) {
-						System.out.println(e1.getMessage());
-					}
-					service.printAll();
+				try {
+					service.getAllFile();
+				} catch (FolderExceptions e2) {
+					System.out.println(e2.getMessage());
+				}
 					break;
 			case 2 : 
 					System.out.println("Other options");
@@ -63,31 +58,39 @@ public class LockedMeMain {
 					}
 					switch(ch_next)
 					{
-					case 1: System.out.println("Provide Folder path");
-							String path = scanner.nextLine();
-							System.out.println("Please give the name of file");
+					case 1: System.out.println("File Name :");
 							String name = scanner.nextLine();
+							System.out.println("Required size(in KB) :");
+							long size = 0;
 							try {
-								service.createfile(path, name);
-							} catch (FolderExceptions e) {
-								System.out.println(e.getMessage());
+								size = Integer.parseInt(scanner.nextLine());
+							}
+							catch(NumberFormatException e)
+							{
+								
+							}
+							Date date = new Date();
+							SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+							String strDate= formatter.format(date); 
+							try {
+								service.addFile(new File(name,size,strDate));
+							} catch (FolderExceptions e1) {
+								System.out.println(e1.getMessage());
 							}
 							break;
-					case 2: System.out.println("Provide Folder path");
-							path = scanner.nextLine();
-							System.out.println("Please give the name of file");
+					case 2: System.out.println("File Name to be deleted :");
 							name = scanner.nextLine();
 							try {
-								service.deletefile(path, name);
+								service.deleteFile(name);
 							} catch (FolderExceptions e) {
 								System.out.println(e.getMessage());
 							}
 							break;
 							
-					case 3:	System.out.println("Provide File path");
-							path = scanner.nextLine();
+					case 3:	System.out.println("File Name to be searched");
+							name = scanner.nextLine();
 							try {
-								service.searchfile(path);
+								service.searchFile(name);
 							} catch (FolderExceptions e) {
 								System.out.println("Search Unsuccessful"+e.getMessage());
 							}

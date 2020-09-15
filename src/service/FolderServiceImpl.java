@@ -11,14 +11,7 @@ public class FolderServiceImpl implements FolderService {
 
 	@Override
 	public void addFile(File file) throws FolderExceptions {
-		if(!isValidName(file.getName()))
-		{
-			throw new FolderExceptions(file.getName()+" contains invalid characters");
-		}
-		if(!isValidSize(file.getSize()))
-		{
-			throw new FolderExceptions(file.getSize()+ "is too large for the memory alloted to directory");
-		}
+		
 		dao.addFile(file);
 		
 	}
@@ -43,10 +36,15 @@ public class FolderServiceImpl implements FolderService {
 	
 	public boolean isValidName(String name)
 	{
+		if(name.trim().matches("[a-zA-Z_{}() ]{3,80}")) {
+			return true;
+		}
 		return false;
 	}
 	public boolean isValidSize(long size)
 	{
+		if(size<=1000000000 && size>=0)
+			return true;
 		return false;
 	}
 }

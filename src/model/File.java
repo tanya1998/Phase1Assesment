@@ -44,6 +44,6 @@ public class File {
 	@Override
 	public String toString()
 	{
-		return (name + "/t" + size +"/t" + "date");
+		return ("     Size:" + size+"KB" +"\t Date Created:" + date);
 	}
 }
